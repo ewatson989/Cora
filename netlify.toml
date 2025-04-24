@@ -1,9 +1,9 @@
 [build]
-publish = "client"
+  publish = "client"
 
 [functions]
-node_bundler = "esbuild"
-directory = "netlify/functions"
+  directory    = "netlify/functions"
+  node_bundler = "esbuild"     # 👈 MUST have this line
 
 [functions."*"]
-timeout = 26
+  timeout = 26                 # (your Pro-plan limit)
