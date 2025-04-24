@@ -48,34 +48,14 @@ main.chat-layout {
   color: #333;
 }
 
-/* Remove bubble styling */
+/* No bubbles */
 .chat-message .bubble {
   all: unset;
 }
 
-/* Toolbar for copy/emoji */
+/* Remove toolbar (emojis & copy) */
 .toolbar {
-  margin-top: 0.25rem;
-  display: flex;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  opacity: 0.75;
-}
-
-.copy-btn,
-.emoji-btn {
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  padding: 0;
-  line-height: 1;
-  opacity: 0.7;
-  transition: opacity 0.15s ease;
-}
-
-.copy-btn:hover,
-.emoji-btn:hover {
-  opacity: 1;
+  display: none;
 }
 
 /* Prompt input bar */
