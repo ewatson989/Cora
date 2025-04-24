@@ -1,6 +1,6 @@
 const promptEl   = document.getElementById("prompt");
 const textBtn    = document.getElementById("generateText");
-const imageBtn   = document.getElementById("generateImage"); // ✅ added
+const imageBtn   = document.getElementById("generateImage");
 const chatLogEl  = document.getElementById("chatLog");
 const outputEl   = document.getElementById("output");
 const chatForm   = document.getElementById("chatForm");
@@ -27,6 +27,7 @@ async function postJSON(url, data) {
   return text ? JSON.parse(text) : {};
 }
 
+// Handle sending text prompt
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const userPrompt = promptEl.value.trim();
@@ -46,7 +47,7 @@ chatForm.addEventListener("submit", async (e) => {
   }
 });
 
-// ✅ Handle image generation
+// Handle image generation
 imageBtn.addEventListener("click", async () => {
   const prompt = promptEl.value.trim();
   if (!prompt) return;
@@ -64,6 +65,7 @@ imageBtn.addEventListener("click", async () => {
   }
 });
 
+// Render chat message
 function updateChatLog(role, text) {
   const id = crypto.randomUUID();
   const html = marked.parse(text);
@@ -73,8 +75,13 @@ function updateChatLog(role, text) {
   outer.innerHTML = `
     <div class="bubble" id="${id}">
       ${html}
-${ role === "assistant" ? `<div class="toolbar"><button class="copy-btn" title="Copy">📋</button></div>` : "" }
-
+      ${
+        role === "assistant"
+          ? `<div class="toolbar">
+               <button class="copy-btn" title="Copy">📋</button>
+             </div>`
+          : ""
+      }
     </div>`;
 
   chatLogEl.appendChild(outer);
@@ -83,27 +90,18 @@ ${ role === "assistant" ? `<div class="toolbar"><button class="copy-btn" title="
   if (role === "assistant") {
     const bubble = document.getElementById(id);
     const copyBtn = bubble.querySelector(".copy-btn");
-    const emojiBtns = bubble.querySelectorAll(".emoji-btn");
 
     copyBtn.addEventListener("click", () =>
       copyToClipboard(bubble.innerText.trim(), copyBtn)
     );
-
-    emojiBtns.forEach((btn) =>
-      btn.addEventListener("click", () => sendReaction(id, btn.textContent))
-    );
   }
 }
 
+// Clipboard helper
 function copyToClipboard(text, btn) {
   navigator.clipboard.writeText(text).then(() => {
     const old = btn.textContent;
     btn.textContent = "✅";
     setTimeout(() => (btn.textContent = old), 1500);
   });
-}
-
-function sendReaction(jobId, emoji) {
-  console.log("Reaction for message", jobId, emoji);
-  // you can send this to a webhook or store later
 }
