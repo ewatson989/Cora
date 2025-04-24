@@ -65,7 +65,18 @@ imageBtn.addEventListener("click", async () => {
 function updateChatLog(role, text) {
   const msgEl = document.createElement("div");
   msgEl.className = `chat-message ${role}`;
-  msgEl.innerHTML = `<strong>${role === "user" ? "You" : "AI"}:</strong> ${text}`;
+
+  // ① convert newlines to <br>  if you don't want Markdown
+  // const html = text.replace(/\n/g, "<br>");
+
+  // ② or render full Markdown (nicer!)
+  const html = marked.parse(text);
+
+  msgEl.innerHTML = `
+    <div class="bubble">
+      ${html}
+    </div>`;
   chatLogEl.appendChild(msgEl);
   chatLogEl.scrollTop = chatLogEl.scrollHeight;
 }
+
