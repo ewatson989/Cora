@@ -27,15 +27,16 @@ export async function handler(event) {
       const url = resp.data?.[0]?.url;
       console.log("✅ Job", jobId, "URL:", url);
 
-      // Save URL → JSONBin
-      await fetch(`https://api.jsonbin.io/v3/b`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Master-Key": process.env.JSONBIN_API_KEY
-        },
-        body: JSON.stringify({ jobId, url })
-      });
+// instead of POST /b
+await fetch(`https://api.jsonbin.io/v3/b/${YOUR_BIN_ID}`, {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+    "X-Master-Key": process.env.JSONBIN_API_KEY
+  },
+  body: JSON.stringify({ [jobId]: url })
+});
+
     })
     .catch((err) => console.error("❌ Job", jobId, err));
 
