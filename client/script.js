@@ -31,7 +31,7 @@ imageBtn.addEventListener("click", async () => {
     const { url } = await postJSON("/.netlify/functions/generate-image", {
       prompt: promptEl.value
     });
-    outputEl.innerHTML = `<img src="\${url}" alt="Generated image"/>`;
+    outputEl.innerHTML = `<img src="${url}" alt="Generated image"/>`;
   } catch (err) {
     outputEl.innerHTML = `<p class="error">${err.message}</p>`;
   }
