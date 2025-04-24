@@ -50,27 +50,12 @@ imageBtn.addEventListener("click", async () => {
   const prompt = promptEl.value.trim();
   if (!prompt) return;
 
-  const jobId = createJobId();          // 🔑 generate ID right here
-  outputEl.innerHTML = `<p>Image is cooking… (job ${jobId})</p>`;
-
+  outputEl.textContent = "Generating image…";
   try {
-    // send both prompt and jobId
-    await postJSON("/.netlify/functions/generate-image-background", {
-      prompt,
-      jobId
-    });
-
-    // start polling
-    const poll = setInterval(async () => {
-      const res = await fetch(`/.netlify/functions/get-image-status?jobId=${jobId}`);
-      if (res.status === 202) return;           // still pending
-      clearInterval(poll);
-
-      const { url } = await res.json();
-      outputEl.innerHTML = `
-        <img src="${url}" alt="AI image"/>
-        <p><a href="${url}" target="_blank">Open in new tab</a></p>`;
-    }, 3000);
+    const { url } = await postJSON("/.netlify/functions/generate-image", { prompt });
+    outputEl.innerHTML = `
+      <img src="${url}" alt="Generated image" />
+      <p><a href="${url}" target="_blank">Open in new tab</a></p>`;
   } catch (err) {
     outputEl.innerHTML = `<p class="error">${err.message}</p>`;
   }
