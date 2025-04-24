@@ -1,4 +1,4 @@
-// client/styles.css
+/* Full height baseline */
 html, body {
   height: 100%;
   margin: 0;
@@ -10,9 +10,9 @@ html, body {
 }
 
 body {
-  margin: 0;
   font-family: system-ui, sans-serif;
   background: #f9f9f9;
+  margin: 0;
 }
 
 main.chat-layout {
@@ -21,7 +21,7 @@ main.chat-layout {
   height: 100vh;
 }
 
-
+/* Chat log takes all available space above the prompt */
 .chat-log {
   flex: 1;
   display: flex;
@@ -31,44 +31,7 @@ main.chat-layout {
   background: #f3f4f6;
 }
 
-
-.chat-input {
-  display: flex;
-  padding: 1rem;
-  border-top: 1px solid #ddd;
-  background: white;
-  gap: 0.5rem;
-}
-
-.chat-input textarea {
-  flex: 1;
-  resize: none;
-  font-size: 1rem;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  height: 48px;
-  line-height: 1.3;
-}
-
-.chat-input button {
-  background: #2d7efb;
-  color: white;
-  border: none;
-  padding: 0 1.2rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  height: 48px;
-}
-
-.image-output img {
-  max-width: 100%;
-  padding: 1rem;
-  display: block;
-  margin: 0 auto;
-}
-
+/* Chat bubble structure */
 .chat-message {
   margin-bottom: 1rem;
 }
@@ -97,6 +60,7 @@ main.chat-layout {
   border-bottom-left-radius: 2px;
 }
 
+/* Toolbar for copy/emoji */
 .toolbar {
   margin-top: 0.4rem;
   display: flex;
@@ -120,13 +84,43 @@ main.chat-layout {
   opacity: 1;
 }
 
-.chat-log::-webkit-scrollbar {
-  width: 6px;
+/* Prompt input bar at the bottom */
+.chat-input {
+  display: flex;
+  padding: 1rem;
+  border-top: 1px solid #ddd;
+  background: white;
+  gap: 0.5rem;
 }
-.chat-log::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 6px;
+
+.chat-input textarea {
+  flex: 1;
+  resize: none;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  height: 48px;
+  line-height: 1.3;
 }
+
+.chat-input button {
+  height: 48px;
+  padding: 0 1.2rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  background: #2d7efb;
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.chat-input button:hover {
+  background: #276ee4;
+}
+
+/* Cora image */
 .cora-img {
   max-width: 150px;
   height: auto;
@@ -134,4 +128,21 @@ main.chat-layout {
   margin: 0.5rem auto 0 auto;
   border-radius: 8px;
   opacity: 0.8;
+}
+
+/* Image results area */
+.image-output img {
+  max-width: 100%;
+  padding: 1rem;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Scrollbar styling (optional) */
+.chat-log::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-log::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 6px;
 }
