@@ -7,26 +7,26 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="split">
-    
-    <!-- LEFT COLUMN -->
-    <section class="input-area">
-      <img src="CoraImage.png" alt="Cora" class="cora-img" />
-      <h1></h1>
-      <textarea id="prompt" placeholder="Enter your message..."></textarea>
-      <div class="buttons">
-        <button id="generateText">Send</button>
-        <button id="generateImage">Generate Image</button>
-      </div>
-      <section id="output"></section>
-    </section>
+  <main class="chat-layout">
 
-    <!-- RIGHT COLUMN -->
+    <!-- Cora image -->
+    <img src="CoraImage.png" alt="Cora" class="cora-img" />
+
+    <!-- Chat messages scroll area -->
     <section id="chatLog" class="chat-log"></section>
 
+    <!-- Prompt bar -->
+    <form id="chatForm" class="chat-input">
+      <textarea id="prompt" placeholder="Send a message..."></textarea>
+      <button id="generateText" type="submit">Send</button>
+    </form>
+
+    <!-- Image output area -->
+    <section id="output" class="image-output"></section>
+    
   </main>
 
-  <!-- Scripts -->
+  <!-- Markdown rendering + JS -->
   <script src="https://unpkg.com/marked@11.2.0/marked.min.js"></script>
   <script src="script.js"></script>
 </body>
