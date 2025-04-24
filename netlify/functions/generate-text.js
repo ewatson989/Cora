@@ -31,15 +31,18 @@ export async function handler(event) {
     "adult content, or bad language.";
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",   // or gpt-3.5-turbo
-      temperature: 0.6,
-      max_tokens: 1000,
-      messages: [
-        { role: "system", content: systemPrompt },
-        ...messages
-      ]
-    });
+const { messages = [], temperature = 0.7 } = JSON.parse(event.body || "{}");
+
+const completion = await openai.chat.completions.create({
+  model: "gpt-4o-mini",
+  temperature,
+  max_tokens: 800,
+  messages: [
+    { role: "system", content: systemPrompt },
+    ...messages
+  ]
+});
+
 
     const text = completion.choices[0].message.content.trim();
     return json(200, { text });
