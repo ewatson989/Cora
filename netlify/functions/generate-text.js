@@ -6,15 +6,12 @@ const openai = new OpenAI({
 });
 
 export async function handler(event) {
-  const { prompt = "" } = JSON.parse(event.body || "{}");
+  const { messages = [] } = JSON.parse(event.body || "{}");
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: "You are a helpful assistant." },
-        { role: "user", content: prompt }
-      ]
+      model: "gpt-4o-mini", // or gpt-3.5-turbo
+      messages
     });
 
     return {
@@ -23,6 +20,7 @@ export async function handler(event) {
       body: JSON.stringify({ text: completion.choices[0].message.content.trim() })
     };
   } catch (err) {
+    console.error(err);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Failed to generate text" })
