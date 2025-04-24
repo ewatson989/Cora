@@ -38,17 +38,18 @@ main.chat-layout {
 
 .chat-message .bubble {
   display: inline-block;
-  max-width: 80%;
+  max-width: 75%;
   width: fit-content;
-  padding: 0.4rem 0.6rem;
+  padding: 0.35rem 0.6rem;              /* tighter padding */
   border-radius: 14px;
   background: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  line-height: 1.25;
+  line-height: 1.2;
   white-space: pre-wrap;
   word-break: break-word;
   margin: 0;
   align-self: flex-start;
+  font-size: 0.95rem;
 }
 
 .chat-message .bubble * {
@@ -56,6 +57,9 @@ main.chat-layout {
   padding: 0 !important;
   line-height: inherit !important;
 }
+
+
+
 
 .chat-message.user .bubble {
   background: #2d7efb;
@@ -73,10 +77,10 @@ main.chat-layout {
 
 /* Toolbar for copy/emoji */
 .toolbar {
-  margin-top: 0.4rem;
+  margin-top: 0.25rem;    /* smaller gap above emojis */
   display: flex;
-  gap: 0.4rem;
-  font-size: 0.9rem;
+  gap: 0.25rem;
+  font-size: 0.85rem;
 }
 
 .copy-btn,
