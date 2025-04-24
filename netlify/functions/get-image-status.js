@@ -1,29 +1,30 @@
 export async function handler(event) {
   const jobId = event.queryStringParameters.jobId;
-  if (!jobId) {
-    return { statusCode: 400, body: "Missing jobId" };
-  }
+  if (!jobId) return { statusCode: 400, body: "Missing jobId" };
 
   try {
-    const response = await fetch(`https://api.jsonbin.io/v3/b/${jobId}/latest`, {
-      method: "GET",
-      headers: {
-        "X-Master-Key": process.env.JSONBIN_API_KEY
-      }
-    });
+    // Find the bin that stores this jobId
+    const res = await fetch(
+      `https://api.jsonbin.io/v3/c/` +      // list collection
+      `?meta=false`,                        // no metadata
+      { headers: { "X-Master-Key": process.env.JSONBIN_API_KEY } }
+    );
+    const bins = await res.json();
 
-    const json = await response.json();
+    // Search for the record with that jobId
+    const bin = bins.find((b) => b.jobId === jobId);
 
-    if (json.record?.url) {
+    if (bin?.url) {
       return {
         statusCode: 200,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: json.record.url })
+        body: JSON.stringify({ url: bin.url })
       };
     }
 
     return { statusCode: 202, body: JSON.stringify({ status: "pending" }) };
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: "Status check failed" }) };
+    console.error(err);
+    return { statusCode: 500, body: "Status lookup failed" };
   }
 }
