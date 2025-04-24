@@ -1,11 +1,19 @@
-const promptEl   = document.getElementById("prompt");
-const textBtn    = document.getElementById("generateText");
-const imageBtn   = document.getElementById("generateImage");
-const chatLogEl  = document.getElementById("chatLog");
-const outputEl   = document.getElementById("output");
-const chatForm   = document.getElementById("chatForm");
+const promptEl    = document.getElementById("prompt");
+const textBtn     = document.getElementById("generateText");
+const imageBtn    = document.getElementById("generateImage");
+const chatLogEl   = document.getElementById("chatLog");
+const outputEl    = document.getElementById("output");
+const chatForm    = document.getElementById("chatForm");
+
+const temperatureSlider = document.getElementById("temperature");
+const tempValueDisplay = document.getElementById("tempValue");
 
 let messages = [];
+
+// Live update slider label
+temperatureSlider.addEventListener("input", () => {
+  tempValueDisplay.textContent = temperatureSlider.value;
+});
 
 promptEl.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
@@ -38,8 +46,13 @@ chatForm.addEventListener("submit", async (e) => {
   promptEl.value = "";
   outputEl.innerHTML = "";
 
+  const temperature = parseFloat(temperatureSlider.value);
+
   try {
-    const { text } = await postJSON("/.netlify/functions/generate-text", { messages });
+    const { text } = await postJSON("/.netlify/functions/generate-text", {
+      messages,
+      temperature
+    });
     messages.push({ role: "assistant", content: text });
     updateChatLog("assistant", text);
   } catch (err) {
