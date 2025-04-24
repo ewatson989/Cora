@@ -53,10 +53,27 @@ main.chat-layout {
   all: unset;
 }
 
-/* Remove toolbar (emojis & copy) */
 .toolbar {
-  display: none;
+  margin-top: 0.25rem;
+  display: flex;
+  gap: 0.25rem;
+  font-size: 0.9rem;
 }
+
+.copy-btn {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+}
+
+.copy-btn:hover {
+  opacity: 1;
+}
+
 
 /* Prompt input bar */
 .chat-input {
