@@ -34,7 +34,7 @@ export async function handler(event) {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",   // or gpt-3.5-turbo
       temperature: 0.6,
-      max_tokens: 300,
+      max_tokens: 1000,
       messages: [
         { role: "system", content: systemPrompt },
         ...messages
