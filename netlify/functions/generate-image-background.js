@@ -45,10 +45,14 @@ console.log("📦 Saving to JSONBin with jobId:", jobId);
     console.log("✅ Image URL saved:", url);
 
 
-    return {
-      statusCode: 202,
-      body: JSON.stringify({ jobId })
-    };
+return {
+-  statusCode: 202,
+-  body: JSON.stringify({ jobId })
++  statusCode: 202,
++  headers: { "Content-Type": "application/json" },   // ← add this
++  body: JSON.stringify({ jobId })
+};
+
   } catch (err) {
     console.error(err);
     return {
