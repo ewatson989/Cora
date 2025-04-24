@@ -40,11 +40,11 @@ main.chat-layout {
   display: inline-block;
   max-width: 80%;
   width: fit-content;
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.6rem;
   border-radius: 14px;
   background: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-  line-height: 1.4;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  line-height: 1.25;
   white-space: pre-wrap;
   word-break: break-word;
   margin: 0;
@@ -52,8 +52,9 @@ main.chat-layout {
 }
 
 .chat-message .bubble * {
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: inherit !important;
 }
 
 .chat-message.user .bubble {
