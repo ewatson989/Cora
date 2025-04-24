@@ -13,7 +13,8 @@ export async function handler(event) {
 
   try {
     const response = await openai.images.generate({
-      model: "dall-e-2",      // or "gpt-image-1"
+      model: "gpt-image-1",      
+      //model: "dall-e-2",    
       prompt,
       n: 1,
       size: "1024x1024"
