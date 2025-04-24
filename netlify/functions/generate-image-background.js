@@ -7,13 +7,16 @@ const openai = new OpenAI({
 });
 
 export async function handler(event) {
-  const { prompt = "" } = JSON.parse(event.body || "{}");
-  if (!prompt) {
-    return { statusCode: 400, body: "Missing prompt" };
+  const { prompt = "", jobId } = JSON.parse(event.body || "{}");
+  if (!prompt || !jobId) {
+    return { statusCode: 400, body: "Missing prompt or jobId" };
   }
 
-  const jobId = uuidv4();
   console.log("📨 Job", jobId, "started");
+  ...
+  // when you save the result, use the supplied jobId
+}
+
 
   // Fire-and-forget: Netlify keeps running in the background
   openai.images
