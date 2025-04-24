@@ -26,6 +26,9 @@ export async function handler(event) {
       const url = (resp && resp.data && resp.data[0] && resp.data[0].url) || "";
       console.log("✅ Job", jobId, "URL:", url);
 
+console.log("📦 Saving", url, "to JSONBin bin", process.env.JSONBIN_BIN_ID);
+
+      
       // Merge this job into a single JSONBin document
       await fetch(`https://api.jsonbin.io/v3/b/${process.env.JSONBIN_BIN_ID}`, {
         method: "PUT",
