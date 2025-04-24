@@ -30,6 +30,7 @@ if (!response || !response.data || !response.data[0]?.url) {
 const url = response.data[0].url;
 console.log("✅ Image URL saved:", url);
 
+console.log("📦 Saving to JSONBin with jobId:", jobId);
 
     // Save to JSONBin
     await fetch(`https://api.jsonbin.io/v3/b/${jobId}`, {
