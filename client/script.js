@@ -1,3 +1,8 @@
+function createJobId() {
+  return crypto.randomUUID();
+}
+
+
 const promptEl = document.getElementById("prompt");
 const textBtn  = document.getElementById("generateText");
 const imageBtn = document.getElementById("generateImage");
@@ -45,32 +50,32 @@ imageBtn.addEventListener("click", async () => {
   const prompt = promptEl.value.trim();
   if (!prompt) return;
 
-  outputEl.textContent = "Generating image…";
+  const jobId = createJobId();          // 🔑 generate ID right here
+  outputEl.innerHTML = `<p>Image is cooking… (job ${jobId})</p>`;
 
   try {
-    const { jobId } = await postJSON(
-      "/.netlify/functions/generate-image-background",
-      { prompt }
-    );
+    // send both prompt and jobId
+    await postJSON("/.netlify/functions/generate-image-background", {
+      prompt,
+      jobId
+    });
 
-    outputEl.innerHTML = `<p>Image is cooking… (job ${jobId})</p>`;
-
+    // start polling
     const poll = setInterval(async () => {
-      const res = await fetch(
-        `/.netlify/functions/get-image-status?jobId=${jobId}`
-      );
-      if (res.status === 202) return;          // still pending
+      const res = await fetch(`/.netlify/functions/get-image-status?jobId=${jobId}`);
+      if (res.status === 202) return;           // still pending
       clearInterval(poll);
 
       const { url } = await res.json();
       outputEl.innerHTML = `
-        <img src="${url}" alt="AI image" />
+        <img src="${url}" alt="AI image"/>
         <p><a href="${url}" target="_blank">Open in new tab</a></p>`;
-    }, 3000);                                  // poll every 3 s
+    }, 3000);
   } catch (err) {
     outputEl.innerHTML = `<p class="error">${err.message}</p>`;
   }
 });
+
 
 function updateChatLog(role, text) {
   const msgEl = document.createElement("div");
