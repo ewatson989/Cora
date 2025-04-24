@@ -12,14 +12,24 @@ export async function handler(event) {
   const jobId = uuidv4();
 
   try {
-    const response = await openai.images.generate({
-      model: "gpt-image-1",
-      prompt,
-      n: 1,
-      size: "1024x1024"
-    });
+const response = await openai.images.generate({
+  model: "dall-e-2",
+  prompt,
+  n: 1,
+  size: "1024x1024"
+});
 
-    const url = response.data[0].url;
+if (!response || !response.data || !response.data[0]?.url) {
+  console.error("❌ No image URL returned from OpenAI:", response);
+  return {
+    statusCode: 500,
+    body: JSON.stringify({ error: "OpenAI did not return an image URL" })
+  };
+}
+
+const url = response.data[0].url;
+console.log("✅ Image URL saved:", url);
+
 
     // Save to JSONBin
     await fetch(`https://api.jsonbin.io/v3/b/${jobId}`, {
