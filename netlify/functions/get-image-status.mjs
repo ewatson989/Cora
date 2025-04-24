@@ -3,22 +3,19 @@ export async function handler(event) {
   if (!jobId) return { statusCode: 400, body: "Missing jobId" };
 
   try {
-    // Find the bin that stores this jobId
     const res = await fetch(
-      `https://api.jsonbin.io/v3/c/` +      // list collection
-      `?meta=false`,                        // no metadata
+      `https://api.jsonbin.io/v3/b/${process.env.JSONBIN_BIN_ID}/latest`,
       { headers: { "X-Master-Key": process.env.JSONBIN_API_KEY } }
     );
-    const bins = await res.json();
 
-    // Search for the record with that jobId
-    const bin = bins.find((b) => b.jobId === jobId);
+    const json = await res.json();
+    const url = json.record?.[jobId];
 
-    if (bin?.url) {
+    if (url) {
       return {
         statusCode: 200,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: bin.url })
+        body: JSON.stringify({ url })
       };
     }
 
