@@ -137,3 +137,16 @@ main.chat-layout {
   background: #d1d5db;
   border-radius: 6px;
 }
+
+.creativity-control {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.creativity-control input[type="range"] {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
