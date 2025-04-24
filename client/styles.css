@@ -12,7 +12,6 @@ html, body {
 body {
   font-family: system-ui, sans-serif;
   background: #f9f9f9;
-  margin: 0;
 }
 
 main.chat-layout {
@@ -21,66 +20,46 @@ main.chat-layout {
   height: 100vh;
 }
 
-/* Chat log takes all available space above the prompt */
+/* Chat log */
 .chat-log {
   flex: 1;
-  display: flex;
-  flex-direction: column;
   overflow-y: auto;
   padding: 1rem;
   background: #f3f4f6;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Chat bubble structure */
+/* Plain message rows */
 .chat-message {
   margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
-.chat-message .bubble {
-  display: inline-block;
-  max-width: 75%;
-  width: fit-content;
-  padding: 0.35rem 0.6rem;              /* tighter padding */
-  border-radius: 14px;
-  background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  line-height: 1.2;
-  white-space: pre-wrap;
-  word-break: break-word;
-  margin: 0;
-  align-self: flex-start;
-  font-size: 0.95rem;
+.chat-message.user {
+  text-align: right;
+  color: #2d7efb;
+  font-weight: 500;
 }
 
-.chat-message .bubble * {
-  margin: 0 !important;
-  padding: 0 !important;
-  line-height: inherit !important;
-}
-
-
-
-
-.chat-message.user .bubble {
-  background: #2d7efb;
-  color: white;
-  align-self: flex-end;
-  border-bottom-right-radius: 2px;
-}
-
-.chat-message.assistant .bubble {
-  background: white;
+.chat-message.assistant {
+  text-align: left;
   color: #333;
-  align-self: flex-start;
-  border-bottom-left-radius: 2px;
+}
+
+/* Remove bubble styling */
+.chat-message .bubble {
+  all: unset;
 }
 
 /* Toolbar for copy/emoji */
 .toolbar {
-  margin-top: 0.25rem;    /* smaller gap above emojis */
+  margin-top: 0.25rem;
   display: flex;
-  gap: 0.25rem;
-  font-size: 0.85rem;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  opacity: 0.75;
 }
 
 .copy-btn,
@@ -99,7 +78,7 @@ main.chat-layout {
   opacity: 1;
 }
 
-/* Prompt input bar at the bottom */
+/* Prompt input bar */
 .chat-input {
   display: flex;
   padding: 1rem;
@@ -140,12 +119,12 @@ main.chat-layout {
   max-width: 150px;
   height: auto;
   display: block;
-  margin: 0.5rem auto 0 auto;
+  margin: 0.5rem auto;
   border-radius: 8px;
   opacity: 0.8;
 }
 
-/* Image results area */
+/* Image result section */
 .image-output img {
   max-width: 100%;
   padding: 1rem;
@@ -153,7 +132,7 @@ main.chat-layout {
   margin: 0 auto;
 }
 
-/* Scrollbar styling (optional) */
+/* Scrollbar */
 .chat-log::-webkit-scrollbar {
   width: 6px;
 }
