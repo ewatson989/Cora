@@ -28,7 +28,7 @@ export async function handler(event) {
   const systemPrompt =
     "You are explaining things to a 9-year-old child. " +
     "Use simple words, friendly examples, and avoid violence, scary themes, " +
-    "adult content, or bad language.";
+    "adult content, or bad language.  Make sure you contain the response in no more than 800 tokens";
 
   try {
 const { messages = [], temperature = 0.7 } = JSON.parse(event.body || "{}");
