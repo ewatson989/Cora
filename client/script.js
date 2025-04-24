@@ -45,33 +45,14 @@ imageBtn.addEventListener("click", async () => {
   const prompt = promptEl.value.trim();
   if (!prompt) return;
 
-  outputEl.textContent = "Generating image...";
+  outputEl.textContent = "Generating image…";
 
   try {
-    const { jobId } = await postJSON("/.netlify/functions/generate-image-background", {
-      prompt
-    });
-
-    outputEl.innerHTML = `<p>Image generation started. Please wait...</p>`;
-
-    const pollInterval = setInterval(async () => {
-      try {
-        const res = await fetch(`/.netlify/functions/get-image-status?jobId=${jobId}`);
-        const data = await res.json();
-
-        if (data.url) {
-          clearInterval(pollInterval);
-          outputEl.innerHTML = `
-            <p>✅ Image Ready:</p>
-            <img src="${data.url}" alt="Generated image" />
-            <p><a href="${data.url}" target="_blank">Open in new tab</a></p>
-          `;
-        }
-      } catch (err) {
-        console.error("Polling failed", err);
-      }
-    }, 3000); // Poll every 3 seconds
-
+    const { url } = await postJSON("/.netlify/functions/generate-image", { prompt });
+    outputEl.innerHTML = `
+      <img src="${url}" alt="Generated image" />
+      <p><a href="${url}" target="_blank">Open in new tab</a></p>
+    `;
   } catch (err) {
     outputEl.innerHTML = `<p class="error">${err.message}</p>`;
   }
