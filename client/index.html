@@ -9,22 +9,20 @@
 <body>
   <main class="chat-layout">
 
-    <!-- Cora image -->
- <!-- Move this INSIDE the chat log section -->
-<section id="chatLog" class="chat-log">
-  <img src="CoraImage.png" alt="Cora" class="cora-img" />
-</section>
+    <!-- Chat log with Cora image at the top -->
+    <section id="chatLog" class="chat-log">
+      <img src="CoraImage.png" alt="Cora" class="cora-img" />
+      <!-- Chat messages will be injected here -->
+    </section>
 
-    <!-- Chat messages scroll area -->
-    <section id="chatLog" class="chat-log"></section>
-
-    <!-- Prompt bar -->
+    <!-- Prompt bar with both buttons -->
     <form id="chatForm" class="chat-input">
       <textarea id="prompt" placeholder="Send a message..."></textarea>
       <button id="generateText" type="submit">Send</button>
+      <button id="generateImage" type="button">Generate Image</button>
     </form>
 
-    <!-- Image output area -->
+    <!-- Image output (below buttons) -->
     <section id="output" class="image-output"></section>
     
   </main>
