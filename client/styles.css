@@ -91,3 +91,52 @@ button:hover {
   height: auto;               /* keep aspect ratio */
   border-radius: 8px;         /* optional rounded corners */
 }
+
+/* Container */
+.chat-log {
+  max-height: 300px;
+  overflow-y: auto;
+  background: #f3f4f6;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+/* Each row */
+.chat-message {
+  display: flex;
+  margin-bottom: 0.75rem;
+}
+.chat-message.user   { justify-content: flex-end; }
+.chat-message.assistant { justify-content: flex-start; }
+
+/* Bubble */
+.chat-message .bubble {
+  max-width: 80%;
+  padding: 0.65rem 0.9rem;
+  border-radius: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;   /* keeps line breaks even without Markdown */
+}
+
+.chat-message.user .bubble {
+  background: #2d7efb;
+  color: #fff;
+  border-bottom-right-radius: 2px;
+}
+
+.chat-message.assistant .bubble {
+  background: #fff;
+  color: #333;
+  border-bottom-left-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* Optional: nicer scrollbar inside chat log */
+.chat-log::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-log::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 6px;
+}
