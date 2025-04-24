@@ -73,17 +73,8 @@ function updateChatLog(role, text) {
   outer.innerHTML = `
     <div class="bubble" id="${id}">
       ${html}
-      ${
-        role === "assistant"
-          ? `<div class="toolbar">
-               <button class="copy-btn" title="Copy">📋</button>
-               <span class="emoji-btn">😊</span>
-               <span class="emoji-btn">😲</span>
-               <span class="emoji-btn">🤔</span>
-               <span class="emoji-btn">👎</span>
-             </div>`
-          : ""
-      }
+${ role === "assistant" ? `<div class="toolbar"><button class="copy-btn" title="Copy">📋</button></div>` : "" }
+
     </div>`;
 
   chatLogEl.appendChild(outer);
