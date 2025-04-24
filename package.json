@@ -1,0 +1,9 @@
+{
+  "name": "openai-prompt-app",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "openai": "^4.28.1",
+    "uuid": "^9.0.0"
+  }
+}

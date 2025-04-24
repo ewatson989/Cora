@@ -1,0 +1,9 @@
+[build]
+publish = "client"
+
+[functions]
+node_bundler = "esbuild"
+directory = "netlify/functions"
+
+[functions."*"]
+timeout = 26
