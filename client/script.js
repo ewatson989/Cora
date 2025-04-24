@@ -12,8 +12,14 @@ async function postJSON(url, data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   });
-  if (!res.ok) throw new Error("Request failed");
-  return res.json();
+
+  // Allow 202 (Accepted) with empty body from background functions
+  if (!res.ok && res.status !== 202) {
+    throw new Error("Request failed");
+  }
+
+  const text = await res.text();
+  return text ? JSON.parse(text) : {};   // Won’t crash on empty body
 }
 
 textBtn.addEventListener("click", async () => {
