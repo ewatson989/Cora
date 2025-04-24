@@ -13,7 +13,7 @@ export async function handler(event) {
 
   try {
     const response = await openai.images.generate({
-      model: "dall-e-2",
+      model: "gpt-image-1",
       prompt,
       n: 1,
       size: "1024x1024"
@@ -30,6 +30,9 @@ export async function handler(event) {
       },
       body: JSON.stringify({ url })
     });
+
+    console.log("✅ Image URL saved:", url);
+
 
     return {
       statusCode: 202,
