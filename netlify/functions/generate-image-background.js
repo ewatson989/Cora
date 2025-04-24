@@ -43,9 +43,6 @@ await fetch(`https://api.jsonbin.io/v3/b/${YOUR_BIN_ID}`, {
     })
     .catch((err) => console.error("❌ Job", jobId, err));
 
-  return {
-    statusCode: 202,
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ jobId })
-  };
+return { statusCode: 202 };
+
 }
