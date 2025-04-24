@@ -18,6 +18,22 @@ async function postJSON(url, data) {
     body: JSON.stringify(data)
   });
 
+// ── copy helper ──────────────────────────────
+function copyToClipboard(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const old = btn.textContent;
+    btn.textContent = "✅";
+    setTimeout(() => (btn.textContent = old), 1500);
+  });
+}
+
+// ── emoji reaction helper (optional analytics stub) ──────────
+function sendReaction(jobId, emoji) {
+  console.log("Reaction for message", jobId, emoji);
+  // You could POST this to a logging endpoint later
+}
+
+
   // Allow 202 (Accepted) with empty body from background functions
   if (!res.ok && res.status !== 202) {
     throw new Error("Request failed");
@@ -63,20 +79,46 @@ imageBtn.addEventListener("click", async () => {
 
 
 function updateChatLog(role, text) {
-  const msgEl = document.createElement("div");
-  msgEl.className = `chat-message ${role}`;
-
-  // ① convert newlines to <br>  if you don't want Markdown
-  // const html = text.replace(/\n/g, "<br>");
-
-  // ② or render full Markdown (nicer!)
+  const id = crypto.randomUUID();              // unique id for copy+emoji
   const html = marked.parse(text);
 
-  msgEl.innerHTML = `
-    <div class="bubble">
+  const outer = document.createElement("div");
+  outer.className = `chat-message ${role}`;
+
+  // Bubble with HTML + toolbar
+  outer.innerHTML = `
+    <div class="bubble" id="${id}">
       ${html}
+      ${
+        role === "assistant"
+          ? `<div class="toolbar">
+               <button class="copy-btn" title="Copy">📋</button>
+               <span class="emoji-btn">😊</span>
+               <span class="emoji-btn">😲</span>
+               <span class="emoji-btn">🤔</span>
+               <span class="emoji-btn">👎</span>
+             </div>`
+          : ""
+      }
     </div>`;
-  chatLogEl.appendChild(msgEl);
+
+  chatLogEl.appendChild(outer);
   chatLogEl.scrollTop = chatLogEl.scrollHeight;
+
+  // wire up copy & emoji only for assistant
+  if (role === "assistant") {
+    const bubble   = document.getElementById(id);
+    const copyBtn  = bubble.querySelector(".copy-btn");
+    const emojiBtns = bubble.querySelectorAll(".emoji-btn");
+
+    copyBtn.addEventListener("click", () =>
+      copyToClipboard(bubble.innerText.trim(), copyBtn)
+    );
+
+    emojiBtns.forEach(btn =>
+      btn.addEventListener("click", () => sendReaction(id, btn.textContent))
+    );
+  }
 }
+
 
