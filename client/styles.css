@@ -83,3 +83,11 @@ button:hover {
   text-align: left;
   color: #2d7efb;
 }
+.hero-img {
+  display: block;
+  margin: 0 auto 1rem auto;   /* center it */
+  max-width: 180px;           /* never exceed 180 px wide */
+  width: 60%;                 /* responsive: 60 % of parent until it hits 180 px */
+  height: auto;               /* keep aspect ratio */
+  border-radius: 8px;         /* optional rounded corners */
+}
