@@ -47,10 +47,14 @@ main.chat-layout {
   line-height: 1.4;
   white-space: pre-wrap;
   word-break: break-word;
-  margin: 0;                     /* remove vertical extra spacing */
+  margin: 0;
   align-self: flex-start;
 }
 
+.chat-message .bubble * {
+  margin: 0;
+  padding: 0;
+}
 
 .chat-message.user .bubble {
   background: #2d7efb;
