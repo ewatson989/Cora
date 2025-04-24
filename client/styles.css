@@ -24,10 +24,14 @@ main.split {
   flex-direction: column;
 }
 
-.input-area h1 {
-  margin-bottom: 0.5rem;
-  text-align: center;
+.input-area {
+  flex: 1;
+  min-width: 30%;
+  max-width: 40%;
 }
+
+
+
 
 textarea {
   width: 100%;
@@ -79,8 +83,9 @@ button:hover {
 
 /* RIGHT column – chat log */
 .chat-log {
-  width: 45%;
-  max-width: 500px;
+  flex: 2;
+  min-width: 50%;
+  max-width: 70%;
   height: 100%;
   overflow-y: auto;
   background: #f3f4f6;
