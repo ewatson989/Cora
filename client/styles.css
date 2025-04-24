@@ -119,3 +119,11 @@ main.chat-layout {
   background: #d1d5db;
   border-radius: 6px;
 }
+.cora-img {
+  max-width: 100px;
+  height: auto;
+  display: block;
+  margin: 0.5rem auto 0 auto;
+  border-radius: 8px;
+  opacity: 0.8;
+}
