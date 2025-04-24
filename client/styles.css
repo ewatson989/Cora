@@ -60,3 +60,26 @@ button:hover {
   line-height: 1.4;
 }
 .error { color: #d64545; }
+
+.chat-log {
+  max-height: 300px;
+  overflow-y: auto;
+  background: #f0f0f0;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.chat-message {
+  margin-bottom: 1rem;
+}
+
+.chat-message.user {
+  text-align: right;
+  color: #333;
+}
+
+.chat-message.assistant {
+  text-align: left;
+  color: #2d7efb;
+}
