@@ -1,9 +1,10 @@
-// client/script.js
-const promptEl = document.getElementById("prompt");
-const textBtn = document.getElementById("generateText");
-const chatLogEl = document.getElementById("chatLog");
-const outputEl = document.getElementById("output");
-const chatForm = document.getElementById("chatForm");
+const promptEl   = document.getElementById("prompt");
+const textBtn    = document.getElementById("generateText");
+const imageBtn   = document.getElementById("generateImage"); // ✅ added
+const chatLogEl  = document.getElementById("chatLog");
+const outputEl   = document.getElementById("output");
+const chatForm   = document.getElementById("chatForm");
+
 let messages = [];
 
 promptEl.addEventListener("keydown", (e) => {
@@ -42,6 +43,24 @@ chatForm.addEventListener("submit", async (e) => {
     updateChatLog("assistant", text);
   } catch (err) {
     updateChatLog("assistant", "⚠️ Error: " + err.message);
+  }
+});
+
+// ✅ Handle image generation
+imageBtn.addEventListener("click", async () => {
+  const prompt = promptEl.value.trim();
+  if (!prompt) return;
+
+  outputEl.textContent = "Generating image…";
+
+  try {
+    const { url } = await postJSON("/.netlify/functions/generate-image", { prompt });
+    outputEl.innerHTML = `
+      <img src="${url}" alt="Generated image" />
+      <p><a href="${url}" target="_blank">Open in new tab</a></p>
+    `;
+  } catch (err) {
+    outputEl.innerHTML = `<p class="error">${err.message}</p>`;
   }
 });
 
