@@ -1,23 +1,27 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap');
+
 /* Full height baseline */
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: 'Nunito Sans', system-ui, sans-serif;
+  background: #f9fafb;
 }
 
 * {
   box-sizing: border-box;
 }
 
-body {
-  font-family: system-ui, sans-serif;
-  background: #f9f9f9;
-}
-
 main.chat-layout {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+  gap: 1rem;
 }
 
 /* Chat log */
@@ -25,7 +29,9 @@ main.chat-layout {
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
-  background: #f3f4f6;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
 }
@@ -35,12 +41,18 @@ main.chat-layout {
   margin-bottom: 1rem;
   font-size: 1rem;
   line-height: 1.5;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .chat-message.user {
   text-align: right;
-  color: #2d7efb;
-  font-weight: 500;
+  color: #4f46e5;
+  font-weight: 600;
 }
 
 .chat-message.assistant {
@@ -48,7 +60,6 @@ main.chat-layout {
   color: #333;
 }
 
-/* No bubbles */
 .chat-message .bubble {
   all: unset;
 }
@@ -56,7 +67,7 @@ main.chat-layout {
 .toolbar {
   margin-top: 0.25rem;
   display: flex;
-  gap: 0.25rem;
+  gap: 0.5rem;
   font-size: 0.9rem;
 }
 
@@ -74,7 +85,6 @@ main.chat-layout {
   opacity: 1;
 }
 
-
 /* Prompt input bar */
 .chat-input {
   display: flex;
@@ -82,6 +92,9 @@ main.chat-layout {
   border-top: 1px solid #ddd;
   background: white;
   gap: 0.5rem;
+  flex-wrap: wrap;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 }
 
 .chat-input textarea {
@@ -90,7 +103,7 @@ main.chat-layout {
   font-size: 1rem;
   padding: 0.75rem;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 12px;
   height: 48px;
   line-height: 1.3;
 }
@@ -99,16 +112,18 @@ main.chat-layout {
   height: 48px;
   padding: 0 1.2rem;
   font-size: 1rem;
-  border-radius: 8px;
+  font-weight: 600;
+  border-radius: 12px;
   border: none;
-  background: #2d7efb;
+  background: linear-gradient(to right, #4f46e5, #6366f1);
   color: white;
   cursor: pointer;
   flex-shrink: 0;
+  transition: background 0.2s ease;
 }
 
 .chat-input button:hover {
-  background: #276ee4;
+  background: linear-gradient(to right, #4338ca, #4f46e5);
 }
 
 /* Cora image */
@@ -138,6 +153,7 @@ main.chat-layout {
   border-radius: 6px;
 }
 
+/* Creativity slider */
 .creativity-control {
   display: flex;
   flex-direction: column;
@@ -150,9 +166,11 @@ main.chat-layout {
   margin-top: 0.25rem;
 }
 
+/* Memory log */
 .memory-log {
-  background: #fff;
-  border-top: 1px solid #ccc;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
   padding: 1rem;
   max-height: 300px;
   overflow-y: auto;
@@ -163,16 +181,19 @@ main.chat-layout {
   border-bottom: 1px solid #eee;
   padding: 0.5rem 0;
 }
+
+/* Voice bar */
 .voice-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0 1rem;
+  padding: 0.75rem 1rem;
   font-size: 0.9rem;
-  background: #fff;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.05);
 }
 
 #micButton {
@@ -186,34 +207,47 @@ main.chat-layout {
 #micButton:hover {
   opacity: 1;
 }
+
 .voice-bar select {
   font-size: 0.9rem;
   padding: 0.25rem;
 }
+
+/* SparkleBot listening */
 .listening {
-  background: #ffe;
-  color: #333;
-  font-weight: 600;
-  padding: 0.75rem;
+  background: #fff7ed;
+  border: 2px solid #facc15;
+  color: #92400e;
   text-align: center;
-  font-size: 0.95rem;
-  border-top: 2px solid #fc0;
-  border-bottom: 2px solid #fc0;
+  padding: 0.5rem;
+  font-weight: 600;
+  border-radius: 12px;
+  margin: 0.5rem 0;
+  animation: pulse 1.5s infinite ease-in-out;
 }
 
-.mic-indicator {
-  display: inline-block;
-  margin-right: 0.5rem;
-  animation: blink 1s step-start infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
 .hidden {
   display: none !important;
 }
 
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .chat-input {
+    flex-direction: column;
+  }
+
+  .chat-input button {
+    width: 100%;
+  }
+
+  .voice-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
