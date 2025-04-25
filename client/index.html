@@ -3,56 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CoraGPT</title>
+  <title>CoraGPT - Powered by SparkleBot</title>
+
+  <!-- Font + Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="chat-layout">
 
-    <!-- Chat log with Cora image at the top -->
-    <section id="chatLog" class="chat-log">
-      <img src="CoraImage.png" alt="Cora" class="cora-img" />
-      <!-- Chat messages will be injected here -->
-    </section>
+    <!-- SparkleBot image (optional branding) -->
+    <img src="CoraImage.png" alt="Cora the Sloth" class="cora-img" />
 
-<!-- Creativity slider -->
-<div class="creativity-control">
-  <label for="temperature">
-    🎨 Creativity: <span id="tempValue">0.7</span>
-  </label>
-  <input type="range" id="temperature" name="temperature" min="0" max="1.5" step="0.1" value="0.7" />
-</div>
+    <!-- Chat log -->
+    <section id="chatLog" class="chat-log"></section>
 
-<!-- Listening status -->
-<div id="listeningStatus" class="listening hidden">
-  <span class="mic-indicator">🎤</span> CoraBot is listening...
-</div>
-    
-    <!-- Voice Mode toggle and mic -->
+    <!-- SparkleBot listening banner -->
+    <div id="listeningStatus" class="listening hidden">
+      <span class="mic-indicator">🎤</span> SparkleBot is listening...
+    </div>
+
+    <!-- Voice mode controls -->
     <div class="voice-bar">
-      <label><input type="checkbox" id="voiceToggle" /> 🔊 Voice Mode</label>
-      <button id="micButton" title="Speak to Cora">🎤</button>
+      <label>
+        <input type="checkbox" id="voiceToggle" />
+        🔊 Voice Mode
+      </label>
+      <button id="micButton" title="Tap to speak">🎤</button>
       <label for="voiceSelect">🗣️ Voice Style:</label>
       <select id="voiceSelect"></select>
     </div>
 
-    <!-- Prompt bar with both buttons -->
+    <!-- Creativity control -->
+    <div class="creativity-control">
+      <label for="temperature">🎨 Creativity: <span id="tempValue">0.7</span></label>
+      <input type="range" id="temperature" name="temperature" min="0" max="1.5" step="0.1" value="0.7" />
+    </div>
+
+    <!-- Prompt form -->
     <form id="chatForm" class="chat-input">
-      <textarea id="prompt" placeholder="Send a message..."></textarea>
+      <textarea id="prompt" placeholder="Ask SparkleBot anything..."></textarea>
       <button id="generateText" type="submit">Send</button>
       <button id="generateImage" type="button">Generate Image</button>
     </form>
 
-    <!-- Image output (below buttons) -->
+    <!-- Image result output -->
     <section id="output" class="image-output"></section>
 
     <!-- Memory viewer -->
     <button id="viewMemories">📖 View Cora Memories</button>
-    <section id="memoryPanel" class="memory-log" hidden></section>
+    <section id="memoryPanel" class="memory-log hidden"></section>
 
   </main>
 
-  <!-- Markdown rendering + JS -->
+  <!-- Markdown rendering + your main script -->
   <script src="https://unpkg.com/marked@11.2.0/marked.min.js"></script>
   <script src="script.js"></script>
 </body>
