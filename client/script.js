@@ -15,7 +15,7 @@ const listeningStatus = document.getElementById("listeningStatus");
 
 let messages = [];
 let availableVoices = [];
-let listenTimeout;
+let listenTimeout = null;
 
 // 🎙️ Load English-only voices
 function populateVoices() {
@@ -30,7 +30,7 @@ function populateVoices() {
 speechSynthesis.onvoiceschanged = populateVoices;
 populateVoices();
 
-// 🎚️ Creativity slider
+// 🎚️ Update slider label
 tempSlider.addEventListener("input", () => {
   tempLabel.textContent = tempSlider.value;
 });
@@ -54,7 +54,7 @@ async function postJSON(url, data) {
   return text ? JSON.parse(text) : {};
 }
 
-// 🧠 Submit prompt
+// 🧠 Submit text prompt
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const userPrompt = promptEl.value.trim();
@@ -132,7 +132,7 @@ function updateChatLog(role, text) {
   }
 }
 
-// 🗣️ Speak reply
+// 🗣️ Speak out loud
 function speak(text) {
   const utter = new SpeechSynthesisUtterance(text);
   const selectedIndex = parseInt(voiceSelect.value);
@@ -143,7 +143,7 @@ function speak(text) {
   utter.pitch = 1;
   utter.lang = "en-US";
   utter.onend = () => {
-    if (voiceToggle.checked) startListening(); // restart if voice mode is still on
+    if (voiceToggle.checked) startListening(); // Only restart if Voice Mode is on
   };
   speechSynthesis.speak(utter);
 }
@@ -180,7 +180,7 @@ viewBtn.addEventListener("click", async () => {
   }
 });
 
-// 🎤 Mic logic
+// 🎤 Voice Recognition Setup
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognizer = SpeechRecognition ? new SpeechRecognition() : null;
 
@@ -208,8 +208,9 @@ if (recognizer) {
   recognizer.continuous = false;
 
   recognizer.onresult = (e) => {
-    stopListening();
+    clearTimeout(listenTimeout);                    // ✅ prevent false timeout
     const speech = e.results[0][0].transcript.trim();
+    stopListening();                                // ✅ hide SparkleBot
     if (speech) {
       promptEl.value = speech;
       chatForm.requestSubmit();
@@ -219,12 +220,13 @@ if (recognizer) {
   };
 
   recognizer.onerror = () => {
+    clearTimeout(listenTimeout);                    // ✅ cancel timer
     stopListening();
     alert("Oops! Something went wrong. Try again?");
   };
 }
 
-// 🔘 Mic button
+// 🎙️ Mic button
 micButton?.addEventListener("click", () => {
   if (!recognizer) {
     alert("Voice input not supported.");
@@ -237,7 +239,7 @@ micButton?.addEventListener("click", () => {
   startListening();
 });
 
-// ✅ Voice Mode toggle — mic starts when enabled
+// 🔘 Voice Mode toggle
 voiceToggle.addEventListener("change", () => {
   if (!recognizer) {
     alert("Voice input not supported on this browser.");
