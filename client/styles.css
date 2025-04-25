@@ -186,3 +186,7 @@ main.chat-layout {
 #micButton:hover {
   opacity: 1;
 }
+.voice-bar select {
+  font-size: 0.9rem;
+  padding: 0.25rem;
+}
