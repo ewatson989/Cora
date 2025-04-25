@@ -106,12 +106,13 @@ main.chat-layout {
   cursor: pointer;
   transition: background 0.2s ease;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  text-align: center;
+  align-items: center;
   line-height: 1.2;
-  flex-wrap: wrap;
+  gap: 2px;
 }
+
 .chat-input button span {
   display: block;
 }
