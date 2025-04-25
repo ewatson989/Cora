@@ -1,30 +1,25 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap');
-
-/* Full height baseline */
+# Rewriting the modern, mobile-optimized CSS after reset
+css_content = """@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap');
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
   font-family: 'Nunito Sans', system-ui, sans-serif;
   background: #f9fafb;
+  overflow: hidden;
 }
-
 * {
   box-sizing: border-box;
 }
-
 main.chat-layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
   max-width: 900px;
   margin: 0 auto;
   padding: 1rem;
   gap: 1rem;
 }
-
-/* Chat log */
 .chat-log {
   flex: 1;
   overflow-y: auto;
@@ -35,42 +30,34 @@ main.chat-layout {
   display: flex;
   flex-direction: column;
 }
-
-/* Plain message rows */
 .chat-message {
   margin-bottom: 1rem;
   font-size: 1rem;
   line-height: 1.5;
   animation: fadeIn 0.3s ease-in;
 }
-
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 .chat-message.user {
   text-align: right;
   color: #4f46e5;
   font-weight: 600;
 }
-
 .chat-message.assistant {
   text-align: left;
   color: #333;
 }
-
 .chat-message .bubble {
   all: unset;
 }
-
 .toolbar {
   margin-top: 0.25rem;
   display: flex;
   gap: 0.5rem;
   font-size: 0.9rem;
 }
-
 .copy-btn {
   cursor: pointer;
   background: transparent;
@@ -80,12 +67,9 @@ main.chat-layout {
   opacity: 0.7;
   transition: opacity 0.15s ease;
 }
-
 .copy-btn:hover {
   opacity: 1;
 }
-
-/* Prompt input bar */
 .chat-input {
   display: flex;
   padding: 1rem;
@@ -96,7 +80,6 @@ main.chat-layout {
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 }
-
 .chat-input textarea {
   flex: 1;
   resize: none;
@@ -107,7 +90,6 @@ main.chat-layout {
   height: 48px;
   line-height: 1.3;
 }
-
 .chat-input button {
   height: 48px;
   padding: 0 1.2rem;
@@ -121,12 +103,9 @@ main.chat-layout {
   flex-shrink: 0;
   transition: background 0.2s ease;
 }
-
 .chat-input button:hover {
   background: linear-gradient(to right, #4338ca, #4f46e5);
 }
-
-/* Cora image */
 .cora-img {
   max-width: 200px;
   height: auto;
@@ -135,16 +114,12 @@ main.chat-layout {
   border-radius: 8px;
   opacity: 0.8;
 }
-
-/* Image result section */
 .image-output img {
   max-width: 100%;
   padding: 1rem;
   display: block;
   margin: 0 auto;
 }
-
-/* Scrollbar */
 .chat-log::-webkit-scrollbar {
   width: 6px;
 }
@@ -152,21 +127,16 @@ main.chat-layout {
   background: #d1d5db;
   border-radius: 6px;
 }
-
-/* Creativity slider */
 .creativity-control {
   display: flex;
   flex-direction: column;
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
-
 .creativity-control input[type="range"] {
   width: 100%;
   margin-top: 0.25rem;
 }
-
-/* Memory log */
 .memory-log {
   background: white;
   border-radius: 12px;
@@ -176,13 +146,10 @@ main.chat-layout {
   overflow-y: auto;
   font-size: 0.95rem;
 }
-
 .memory-item {
   border-bottom: 1px solid #eee;
   padding: 0.5rem 0;
 }
-
-/* Voice bar */
 .voice-bar {
   display: flex;
   align-items: center;
@@ -195,7 +162,6 @@ main.chat-layout {
   border-radius: 12px;
   box-shadow: 0 1px 5px rgba(0,0,0,0.05);
 }
-
 #micButton {
   font-size: 1.4rem;
   background: none;
@@ -203,17 +169,13 @@ main.chat-layout {
   cursor: pointer;
   opacity: 0.8;
 }
-
 #micButton:hover {
   opacity: 1;
 }
-
 .voice-bar select {
   font-size: 0.9rem;
   padding: 0.25rem;
 }
-
-/* SparkleBot listening */
 .listening {
   background: #fff7ed;
   border: 2px solid #facc15;
@@ -225,29 +187,46 @@ main.chat-layout {
   margin: 0.5rem 0;
   animation: pulse 1.5s infinite ease-in-out;
 }
-
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
-
 .hidden {
   display: none !important;
 }
-
-/* Mobile responsiveness */
 @media (max-width: 768px) {
+  main.chat-layout {
+    padding: 0.5rem;
+  }
+  .chat-log {
+    padding: 0.75rem;
+    font-size: 1.05rem;
+  }
   .chat-input {
     flex-direction: column;
+    padding: 0.75rem;
   }
-
   .chat-input button {
     width: 100%;
+    font-size: 1.1rem;
   }
-
+  #prompt {
+    font-size: 1.1rem;
+    min-height: 60px;
+  }
+  .listening {
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+  .creativity-control,
   .voice-bar {
     flex-direction: column;
     align-items: stretch;
+    padding: 0.5rem 0;
+  }
+  .voice-bar select,
+  .voice-bar button {
+    width: 100%;
   }
 }
