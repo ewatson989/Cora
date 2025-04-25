@@ -11,11 +11,13 @@ const memoryPanel  = document.getElementById("memoryPanel");
 const voiceToggle  = document.getElementById("voiceToggle");
 const micButton    = document.getElementById("micButton");
 const voiceSelect  = document.getElementById("voiceSelect");
+const listeningStatus = document.getElementById("listeningStatus");
 
 let messages = [];
 let availableVoices = [];
+let listenTimeout;
 
-// Load voices (English only)
+// 🎙️ Load English-only voices
 function populateVoices() {
   const allVoices = speechSynthesis.getVoices();
   availableVoices = allVoices.filter(voice =>
@@ -28,12 +30,12 @@ function populateVoices() {
 speechSynthesis.onvoiceschanged = populateVoices;
 populateVoices();
 
-// Update slider label
+// 🎚️ Creativity slider
 tempSlider.addEventListener("input", () => {
   tempLabel.textContent = tempSlider.value;
 });
 
-// Submit on Enter
+// ⏎ Submit on Enter
 promptEl.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
@@ -52,7 +54,7 @@ async function postJSON(url, data) {
   return text ? JSON.parse(text) : {};
 }
 
-// Submit prompt
+// 🧠 Submit prompt
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const userPrompt = promptEl.value.trim();
@@ -78,7 +80,7 @@ chatForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Generate image
+// 🖼️ Generate image
 imageBtn.addEventListener("click", async () => {
   const prompt = promptEl.value.trim();
   if (!prompt) return;
@@ -92,7 +94,7 @@ imageBtn.addEventListener("click", async () => {
   }
 });
 
-// Copy to clipboard
+// 📋 Copy to clipboard
 function copyToClipboard(text, btn) {
   navigator.clipboard.writeText(text).then(() => {
     const old = btn.textContent;
@@ -101,7 +103,7 @@ function copyToClipboard(text, btn) {
   });
 }
 
-// Add to chat log
+// 📝 Render chat
 function updateChatLog(role, text) {
   const id = crypto.randomUUID();
   const html = marked.parse(text);
@@ -130,7 +132,7 @@ function updateChatLog(role, text) {
   }
 }
 
-// Speak out loud
+// 🗣️ Speak reply
 function speak(text) {
   const utter = new SpeechSynthesisUtterance(text);
   const selectedIndex = parseInt(voiceSelect.value);
@@ -140,10 +142,13 @@ function speak(text) {
   utter.rate = 1;
   utter.pitch = 1;
   utter.lang = "en-US";
+  utter.onend = () => {
+    if (voiceToggle.checked) startListening(); // restart if voice mode is still on
+  };
   speechSynthesis.speak(utter);
 }
 
-// Save memory
+// 💾 Save memory
 async function saveToMemory(entry) {
   try {
     await postJSON("/.netlify/functions/save-memory", entry);
@@ -153,7 +158,7 @@ async function saveToMemory(entry) {
   }
 }
 
-// Load memories
+// 📖 Load saved memories
 viewBtn.addEventListener("click", async () => {
   if (!memoryPanel.hidden) {
     memoryPanel.hidden = true;
@@ -175,9 +180,27 @@ viewBtn.addEventListener("click", async () => {
   }
 });
 
-// 🎤 Speech recognition (mic only)
+// 🎤 Mic logic
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognizer = SpeechRecognition ? new SpeechRecognition() : null;
+
+function startListening() {
+  if (!recognizer) return;
+  recognizer.start();
+  listeningStatus?.classList.remove("hidden");
+
+  listenTimeout = setTimeout(() => {
+    recognizer.abort();
+    listeningStatus?.classList.add("hidden");
+    alert("Still there? Tap the mic when you're ready.");
+  }, 5000);
+}
+
+function stopListening() {
+  recognizer?.abort();
+  clearTimeout(listenTimeout);
+  listeningStatus?.classList.add("hidden");
+}
 
 if (recognizer) {
   recognizer.lang = "en-US";
@@ -185,6 +208,7 @@ if (recognizer) {
   recognizer.continuous = false;
 
   recognizer.onresult = (e) => {
+    stopListening();
     const speech = e.results[0][0].transcript.trim();
     if (speech) {
       promptEl.value = speech;
@@ -195,27 +219,34 @@ if (recognizer) {
   };
 
   recognizer.onerror = () => {
+    stopListening();
     alert("Oops! Something went wrong. Try again?");
   };
 }
 
-// 🎤 Mic click starts recognizer if Voice Mode is on
+// 🔘 Mic button
 micButton?.addEventListener("click", () => {
   if (!recognizer) {
     alert("Voice input not supported.");
     return;
   }
-  if (voiceToggle.checked) {
-    recognizer.start();
-  } else {
+  if (!voiceToggle.checked) {
     alert("Voice Mode is off. Turn it on to use the mic.");
+    return;
   }
+  startListening();
 });
 
-// ✅ Do not auto-start mic on toggle to avoid Android conflict
+// ✅ Voice Mode toggle — mic starts when enabled
 voiceToggle.addEventListener("change", () => {
   if (!recognizer) {
     alert("Voice input not supported on this browser.");
     voiceToggle.checked = false;
+    return;
+  }
+  if (voiceToggle.checked) {
+    startListening();
+  } else {
+    stopListening();
   }
 });
