@@ -23,6 +23,12 @@
       <input type="range" id="temperature" name="temperature" min="0" max="1.5" step="0.1" value="0.7" />
     </div>
 
+    <!-- Voice Mode toggle and mic -->
+    <div class="voice-bar">
+      <label><input type="checkbox" id="voiceToggle" /> 🔊 Voice Mode</label>
+      <button id="micButton" title="Speak to Cora">🎤</button>
+    </div>
+
     <!-- Prompt bar with both buttons -->
     <form id="chatForm" class="chat-input">
       <textarea id="prompt" placeholder="Send a message..."></textarea>
