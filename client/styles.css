@@ -190,3 +190,8 @@ main.chat-layout {
   font-size: 0.9rem;
   padding: 0.25rem;
 }
+A blinking mic when voice is active 🎙️
+
+A little animated assistant ("SparkleBot is listening...")
+
+Timeout fallback if no one speaks after 5 seconds
