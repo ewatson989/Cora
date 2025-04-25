@@ -17,11 +17,18 @@ const voiceSelect = document.getElementById("voiceSelect");
 let availableVoices = [];
 
 function populateVoices() {
-  availableVoices = speechSynthesis.getVoices();
+  const allVoices = speechSynthesis.getVoices();
+
+  // Only include English voices
+  availableVoices = allVoices.filter(voice =>
+    voice.lang.toLowerCase().startsWith("en")
+  );
+
   voiceSelect.innerHTML = availableVoices
     .map((voice, i) => `<option value="${i}">${voice.name} (${voice.lang})</option>`)
     .join("");
 }
+
 speechSynthesis.onvoiceschanged = populateVoices;
 populateVoices();
 
