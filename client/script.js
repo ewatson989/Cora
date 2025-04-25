@@ -8,15 +8,17 @@ const tempSlider   = document.getElementById("temperature");
 const tempLabel    = document.getElementById("tempValue");
 const viewBtn      = document.getElementById("viewMemories");
 const memoryPanel  = document.getElementById("memoryPanel");
+const voiceToggle  = document.getElementById("voiceToggle");
+const micButton    = document.getElementById("micButton");
 
 let messages = [];
 
-// 🎚️ Update temp label in real time
-tempSlider?.addEventListener("input", () => {
+// 🎚️ Update slider label
+tempSlider.addEventListener("input", () => {
   tempLabel.textContent = tempSlider.value;
 });
 
-// ⏎ Submit with Enter (but Shift+Enter makes newline)
+// ⏎ Submit on Enter
 promptEl.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
@@ -24,21 +26,18 @@ promptEl.addEventListener("keydown", (e) => {
   }
 });
 
-// 🌐 Utility for POST requests
 async function postJSON(url, data) {
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   });
-  if (!res.ok && res.status !== 202) {
-    throw new Error("Request failed");
-  }
+  if (!res.ok && res.status !== 202) throw new Error("Request failed");
   const text = await res.text();
   return text ? JSON.parse(text) : {};
 }
 
-// 🧠 Submit text prompt to assistant
+// 🧠 Submit chat
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const userPrompt = promptEl.value.trim();
@@ -49,7 +48,7 @@ chatForm.addEventListener("submit", async (e) => {
   promptEl.value = "";
   outputEl.innerHTML = "";
 
-  const temperature = parseFloat(tempSlider?.value || "0.7");
+  const temperature = parseFloat(tempSlider.value);
 
   try {
     const { text } = await postJSON("/.netlify/functions/generate-text", {
@@ -58,68 +57,27 @@ chatForm.addEventListener("submit", async (e) => {
     });
     messages.push({ role: "assistant", content: text });
     updateChatLog("assistant", text);
+    if (voiceToggle.checked) speak(text);
   } catch (err) {
     updateChatLog("assistant", "⚠️ Error: " + err.message);
   }
 });
 
 // 🖼️ Generate image
-imageBtn?.addEventListener("click", async () => {
+imageBtn.addEventListener("click", async () => {
   const prompt = promptEl.value.trim();
   if (!prompt) return;
-
   outputEl.textContent = "Generating image…";
-
   try {
     const { url } = await postJSON("/.netlify/functions/generate-image", { prompt });
-    outputEl.innerHTML = `
-      <img src="${url}" alt="Generated image" />
-      <p><a href="${url}" target="_blank">Open in new tab</a></p>
-    `;
+    outputEl.innerHTML = `<img src="${url}" alt="Generated image" />
+      <p><a href="${url}" target="_blank">Open in new tab</a></p>`;
   } catch (err) {
     outputEl.innerHTML = `<p class="error">${err.message}</p>`;
   }
 });
 
-// 📝 Render chat
-function updateChatLog(role, text) {
-  const id = crypto.randomUUID();
-  const html = marked.parse(text);
-  const outer = document.createElement("div");
-  outer.className = `chat-message ${role}`;
-
-  outer.innerHTML = `
-    <div class="bubble" id="${id}">
-      ${html}
-      ${
-        role === "assistant"
-          ? `<div class="toolbar">
-               <button class="copy-btn" title="Copy">📋</button>
-               <button class="save-btn" title="Save to Cora Memory">💾</button>
-             </div>`
-          : ""
-      }
-    </div>`;
-
-  chatLogEl.appendChild(outer);
-  chatLogEl.scrollTop = chatLogEl.scrollHeight;
-
-  if (role === "assistant") {
-    const bubble = document.getElementById(id);
-    const copyBtn = bubble.querySelector(".copy-btn");
-    const saveBtn = bubble.querySelector(".save-btn");
-
-    copyBtn?.addEventListener("click", () =>
-      copyToClipboard(bubble.innerText.trim(), copyBtn)
-    );
-
-    saveBtn?.addEventListener("click", () =>
-      saveToMemory({ type: "text", content: text, date: new Date().toISOString() })
-    );
-  }
-}
-
-// 📋 Copy to clipboard
+// 📋 Clipboard copy
 function copyToClipboard(text, btn) {
   navigator.clipboard.writeText(text).then(() => {
     const old = btn.textContent;
@@ -128,7 +86,45 @@ function copyToClipboard(text, btn) {
   });
 }
 
-// 💾 Save to cloud memory
+// 📝 Add chat
+function updateChatLog(role, text) {
+  const id = crypto.randomUUID();
+  const html = marked.parse(text);
+  const outer = document.createElement("div");
+  outer.className = `chat-message ${role}`;
+  outer.innerHTML = `
+    <div class="bubble" id="${id}">
+      ${html}
+      ${role === "assistant"
+        ? `<div class="toolbar">
+             <button class="copy-btn" title="Copy">📋</button>
+             <button class="save-btn" title="Save to Cora Memory">💾</button>
+           </div>`
+        : ""}`;
+  chatLogEl.appendChild(outer);
+  chatLogEl.scrollTop = chatLogEl.scrollHeight;
+
+  if (role === "assistant") {
+    const bubble = document.getElementById(id);
+    bubble.querySelector(".copy-btn")?.addEventListener("click", () =>
+      copyToClipboard(bubble.innerText.trim(), bubble.querySelector(".copy-btn"))
+    );
+    bubble.querySelector(".save-btn")?.addEventListener("click", () =>
+      saveToMemory({ type: "text", content: text, date: new Date().toISOString() })
+    );
+  }
+}
+
+// 💬 Speak response aloud
+function speak(text) {
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate = 1;
+  utter.pitch = 1;
+  utter.lang = "en-US";
+  speechSynthesis.speak(utter);
+}
+
+// 💾 Save memory
 async function saveToMemory(entry) {
   try {
     await postJSON("/.netlify/functions/save-memory", entry);
@@ -138,26 +134,52 @@ async function saveToMemory(entry) {
   }
 }
 
-// 📖 Load memories
-viewBtn?.addEventListener("click", async () => {
+// 📖 Load saved memories
+viewBtn.addEventListener("click", async () => {
   if (!memoryPanel.hidden) {
     memoryPanel.hidden = true;
     return;
   }
-
   try {
     const entries = await postJSON("/.netlify/functions/get-memories", {});
     memoryPanel.innerHTML = entries.length
       ? entries.map(item => `
-          <div class="memory-item">
-            <strong>${new Date(item.date).toLocaleString()}:</strong><br/>
-            ${item.content}
-          </div>`).join("")
+        <div class="memory-item">
+          <strong>${new Date(item.date).toLocaleString()}:</strong><br/>
+          ${item.content}
+        </div>`).join("")
       : "<p>No memories yet!</p>";
-
     memoryPanel.hidden = false;
   } catch (err) {
     memoryPanel.innerHTML = `<p class="error">${err.message}</p>`;
     memoryPanel.hidden = false;
   }
+});
+
+// 🎤 Mic input → text
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognizer = SpeechRecognition ? new SpeechRecognition() : null;
+
+if (recognizer) {
+  recognizer.lang = "en-US";
+  recognizer.interimResults = false;
+  recognizer.continuous = false;
+
+  recognizer.onresult = (e) => {
+    const speech = e.results[0][0].transcript;
+    promptEl.value = speech;
+    chatForm.requestSubmit();
+  };
+
+  recognizer.onerror = (e) => {
+    alert("Oops! I didn’t catch that. Try again?");
+  };
+}
+
+micButton?.addEventListener("click", () => {
+  if (!recognizer) {
+    alert("Voice input not supported on this browser.");
+    return;
+  }
+  recognizer.start();
 });
