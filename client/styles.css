@@ -150,3 +150,16 @@ main.chat-layout {
   margin-top: 0.25rem;
 }
 
+.memory-log {
+  background: #fff;
+  border-top: 1px solid #ccc;
+  padding: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 0.95rem;
+}
+
+.memory-item {
+  border-bottom: 1px solid #eee;
+  padding: 0.5rem 0;
+}
