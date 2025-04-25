@@ -5,46 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CoraGPT - Powered by SparkleBot</title>
 
-  <!-- Font + Styles -->
+  <!-- Fonts + Styles -->
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="chat-layout">
 
-    <!-- SparkleBot image (optional branding) -->
+    <!-- Header image -->
     <img src="CoraImage.png" alt="Cora the Sloth" class="cora-img" />
 
-    <!-- Chat log -->
+    <!-- Chat log output -->
     <section id="chatLog" class="chat-log"></section>
 
-    <!-- SparkleBot listening banner -->
+    <!-- SparkleBot is listening -->
     <div id="listeningStatus" class="listening hidden">
-      <span class="mic-indicator">🎤</span> CoraBot is listening...
+      <span class="mic-indicator">🎤</span> SparkleBot is listening...
     </div>
 
-    <!-- Voice mode controls -->
-<div class="voice-bar">
-  <label><input type="checkbox" id="voiceToggle" /> 🔊 Voice Mode</label>
-  <button id="micButton" title="Tap to speak">🎤</button>
-  <label for="voiceSelect">🗣️</label>
-  <select id="voiceSelect"></select>
-</div>
-    
-    <!-- Creativity control -->
+    <!-- Voice Mode bar -->
+    <div class="voice-bar">
+      <label>
+        <input type="checkbox" id="voiceToggle" />
+        🔊 Voice Mode
+      </label>
+
+      <button id="micButton" title="Tap to speak">🎤</button>
+
+      <label for="voiceSelect">🗣️ Voice Style:</label>
+      <select id="voiceSelect">
+        <option disabled selected>Loading voices...</option>
+      </select>
+    </div>
+
+    <!-- Creativity -->
     <div class="creativity-control">
       <label for="temperature">🎨 Creativity: <span id="tempValue">0.7</span></label>
-      <input type="range" id="temperature" name="temperature" min="0" max="1.5" step="0.1" value="0.7" />
+      <input type="range" id="temperature" min="0" max="1.5" step="0.1" value="0.7" />
     </div>
 
-    <!-- Prompt form -->
+    <!-- Prompt + buttons -->
     <form id="chatForm" class="chat-input">
       <textarea id="prompt" placeholder="Ask CoraBot anything..."></textarea>
-      <button id="generateText" type="submit">Send</button>
-      <button id="generateImage" type="button">Generate Image</button>
+      <button id="generateText" type="submit"><span>Send</span></button>
+      <button id="generateImage" type="button"><span>Generate</span><span>Image</span></button>
     </form>
 
-    <!-- Image result output -->
+    <!-- Output (image result) -->
     <section id="output" class="image-output"></section>
 
     <!-- Memory viewer -->
@@ -53,7 +60,7 @@
 
   </main>
 
-  <!-- Markdown rendering + your main script -->
+  <!-- Markdown rendering + JS -->
   <script src="https://unpkg.com/marked@11.2.0/marked.min.js"></script>
   <script src="script.js"></script>
 </body>
