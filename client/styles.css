@@ -1,5 +1,6 @@
-# Rewriting the modern, mobile-optimized CSS after reset
-css_content = """@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap');
+final_mobile_css = """
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap');
+
 html, body {
   height: 100%;
   margin: 0;
@@ -17,12 +18,14 @@ main.chat-layout {
   height: 100dvh;
   max-width: 900px;
   margin: 0 auto;
-  padding: 1rem;
-  gap: 1rem;
+  padding: 0.5rem;
+  gap: 0.5rem;
+  overflow: hidden;
 }
 .chat-log {
-  flex: 1;
+  flex: 1 1 auto;
   overflow-y: auto;
+  min-height: 0;
   padding: 1rem;
   background: white;
   border-radius: 12px;
@@ -79,6 +82,7 @@ main.chat-layout {
   flex-wrap: wrap;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  flex-shrink: 0;
 }
 .chat-input textarea {
   flex: 1;
@@ -132,6 +136,7 @@ main.chat-layout {
   flex-direction: column;
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
+  flex-shrink: 0;
 }
 .creativity-control input[type="range"] {
   width: 100%;
@@ -152,15 +157,28 @@ main.chat-layout {
 }
 .voice-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.75rem 1rem;
+  gap: 0.5rem;
+  padding: 0.75rem;
   font-size: 0.9rem;
   background: white;
   border: 1px solid #ddd;
   border-radius: 12px;
   box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+  flex-shrink: 0;
+}
+.voice-bar label,
+.voice-bar select,
+#micButton {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.voice-bar select {
+  flex-grow: 2;
+  min-width: 140px;
 }
 #micButton {
   font-size: 1.4rem;
@@ -171,10 +189,6 @@ main.chat-layout {
 }
 #micButton:hover {
   opacity: 1;
-}
-.voice-bar select {
-  font-size: 0.9rem;
-  padding: 0.25rem;
 }
 .listening {
   background: #fff7ed;
@@ -230,3 +244,4 @@ main.chat-layout {
     width: 100%;
   }
 }
+"""
