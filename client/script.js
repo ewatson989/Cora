@@ -15,7 +15,7 @@ const voiceSelect  = document.getElementById("voiceSelect");
 let messages = [];
 let availableVoices = [];
 
-// 🎙️ Load English-only voices
+// Load voices (English only)
 function populateVoices() {
   const allVoices = speechSynthesis.getVoices();
   availableVoices = allVoices.filter(voice =>
@@ -28,12 +28,12 @@ function populateVoices() {
 speechSynthesis.onvoiceschanged = populateVoices;
 populateVoices();
 
-// 🎚️ Creativity slider
+// Update slider label
 tempSlider.addEventListener("input", () => {
   tempLabel.textContent = tempSlider.value;
 });
 
-// ⏎ Submit on Enter
+// Submit on Enter
 promptEl.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
@@ -52,7 +52,7 @@ async function postJSON(url, data) {
   return text ? JSON.parse(text) : {};
 }
 
-// 💬 Submit chat
+// Submit prompt
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const userPrompt = promptEl.value.trim();
@@ -78,7 +78,7 @@ chatForm.addEventListener("submit", async (e) => {
   }
 });
 
-// 🖼️ Generate image
+// Generate image
 imageBtn.addEventListener("click", async () => {
   const prompt = promptEl.value.trim();
   if (!prompt) return;
@@ -92,7 +92,7 @@ imageBtn.addEventListener("click", async () => {
   }
 });
 
-// 📋 Copy to clipboard
+// Copy to clipboard
 function copyToClipboard(text, btn) {
   navigator.clipboard.writeText(text).then(() => {
     const old = btn.textContent;
@@ -101,7 +101,7 @@ function copyToClipboard(text, btn) {
   });
 }
 
-// 📝 Render chat
+// Add to chat log
 function updateChatLog(role, text) {
   const id = crypto.randomUUID();
   const html = marked.parse(text);
@@ -130,7 +130,7 @@ function updateChatLog(role, text) {
   }
 }
 
-// 🗣️ Speak aloud
+// Speak out loud
 function speak(text) {
   const utter = new SpeechSynthesisUtterance(text);
   const selectedIndex = parseInt(voiceSelect.value);
@@ -140,13 +140,10 @@ function speak(text) {
   utter.rate = 1;
   utter.pitch = 1;
   utter.lang = "en-US";
-  utter.onend = () => {
-    if (voiceToggle.checked) recognizer?.start();
-  };
   speechSynthesis.speak(utter);
 }
 
-// 💾 Save memory
+// Save memory
 async function saveToMemory(entry) {
   try {
     await postJSON("/.netlify/functions/save-memory", entry);
@@ -156,7 +153,7 @@ async function saveToMemory(entry) {
   }
 }
 
-// 📖 Load memories
+// Load memories
 viewBtn.addEventListener("click", async () => {
   if (!memoryPanel.hidden) {
     memoryPanel.hidden = true;
@@ -178,7 +175,7 @@ viewBtn.addEventListener("click", async () => {
   }
 });
 
-// 🎤 Voice Recognition
+// 🎤 Speech recognition (mic only)
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognizer = SpeechRecognition ? new SpeechRecognition() : null;
 
@@ -202,34 +199,23 @@ if (recognizer) {
   };
 }
 
-// 🎤 Mic button
-voiceToggle.addEventListener("change", () => {
-  if (!recognizer) {
-    alert("Voice input not supported on this browser.");
-    voiceToggle.checked = false;
-  }
-  // Do NOT start recognizer here
-});
-
-
-// 🎛️ Voice Mode toggle — start mic when turned ON
-voiceToggle.addEventListener("change", () => {
-  if (!recognizer) {
-    alert("Voice input not supported on this browser.");
-    voiceToggle.checked = false;
-    return;
-  }
-
+// 🎤 Mic click starts recognizer if Voice Mode is on
 micButton?.addEventListener("click", () => {
   if (!recognizer) {
     alert("Voice input not supported.");
     return;
   }
-
   if (voiceToggle.checked) {
     recognizer.start();
   } else {
-    alert("Enable Voice Mode first.");
+    alert("Voice Mode is off. Turn it on to use the mic.");
   }
 });
 
+// ✅ Do not auto-start mic on toggle to avoid Android conflict
+voiceToggle.addEventListener("change", () => {
+  if (!recognizer) {
+    alert("Voice input not supported on this browser.");
+    voiceToggle.checked = false;
+  }
+});
