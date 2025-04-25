@@ -203,13 +203,14 @@ if (recognizer) {
 }
 
 // 🎤 Mic button
-micButton?.addEventListener("click", () => {
+voiceToggle.addEventListener("change", () => {
   if (!recognizer) {
-    alert("Voice input not supported.");
-    return;
+    alert("Voice input not supported on this browser.");
+    voiceToggle.checked = false;
   }
-  recognizer.start();
+  // Do NOT start recognizer here
 });
+
 
 // 🎛️ Voice Mode toggle — start mic when turned ON
 voiceToggle.addEventListener("change", () => {
@@ -219,9 +220,16 @@ voiceToggle.addEventListener("change", () => {
     return;
   }
 
+micButton?.addEventListener("click", () => {
+  if (!recognizer) {
+    alert("Voice input not supported.");
+    return;
+  }
+
   if (voiceToggle.checked) {
-    recognizer.start(); // Start listening
+    recognizer.start();
   } else {
-    recognizer.abort(); // Stop listening
+    alert("Enable Voice Mode first.");
   }
 });
+
