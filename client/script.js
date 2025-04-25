@@ -13,6 +13,19 @@ const micButton    = document.getElementById("micButton");
 
 let messages = [];
 
+const voiceSelect = document.getElementById("voiceSelect");
+let availableVoices = [];
+
+function populateVoices() {
+  availableVoices = speechSynthesis.getVoices();
+  voiceSelect.innerHTML = availableVoices
+    .map((voice, i) => `<option value="${i}">${voice.name} (${voice.lang})</option>`)
+    .join("");
+}
+speechSynthesis.onvoiceschanged = populateVoices;
+populateVoices();
+
+
 // 🎚️ Update slider label
 tempSlider.addEventListener("input", () => {
   tempLabel.textContent = tempSlider.value;
@@ -118,11 +131,16 @@ function updateChatLog(role, text) {
 // 💬 Speak response aloud
 function speak(text) {
   const utter = new SpeechSynthesisUtterance(text);
+  const selectedIndex = parseInt(voiceSelect.value);
+  if (availableVoices[selectedIndex]) {
+    utter.voice = availableVoices[selectedIndex];
+  }
   utter.rate = 1;
   utter.pitch = 1;
   utter.lang = "en-US";
   speechSynthesis.speak(utter);
 }
+
 
 // 💾 Save memory
 async function saveToMemory(entry) {
