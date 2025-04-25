@@ -10,30 +10,24 @@ const viewBtn      = document.getElementById("viewMemories");
 const memoryPanel  = document.getElementById("memoryPanel");
 const voiceToggle  = document.getElementById("voiceToggle");
 const micButton    = document.getElementById("micButton");
+const voiceSelect  = document.getElementById("voiceSelect");
 
 let messages = [];
-
-const voiceSelect = document.getElementById("voiceSelect");
 let availableVoices = [];
 
 function populateVoices() {
   const allVoices = speechSynthesis.getVoices();
-
-  // Only include English voices
   availableVoices = allVoices.filter(voice =>
     voice.lang.toLowerCase().startsWith("en")
   );
-
   voiceSelect.innerHTML = availableVoices
     .map((voice, i) => `<option value="${i}">${voice.name} (${voice.lang})</option>`)
     .join("");
 }
-
 speechSynthesis.onvoiceschanged = populateVoices;
 populateVoices();
 
-
-// 🎚️ Update slider label
+// 🎚️ Update creativity slider
 tempSlider.addEventListener("input", () => {
   tempLabel.textContent = tempSlider.value;
 });
@@ -46,6 +40,7 @@ promptEl.addEventListener("keydown", (e) => {
   }
 });
 
+// 🌐 Utility
 async function postJSON(url, data) {
   const res = await fetch(url, {
     method: "POST",
@@ -69,7 +64,6 @@ chatForm.addEventListener("submit", async (e) => {
   outputEl.innerHTML = "";
 
   const temperature = parseFloat(tempSlider.value);
-
   try {
     const { text } = await postJSON("/.netlify/functions/generate-text", {
       messages,
@@ -97,7 +91,7 @@ imageBtn.addEventListener("click", async () => {
   }
 });
 
-// 📋 Clipboard copy
+// 📋 Copy to clipboard
 function copyToClipboard(text, btn) {
   navigator.clipboard.writeText(text).then(() => {
     const old = btn.textContent;
@@ -106,7 +100,7 @@ function copyToClipboard(text, btn) {
   });
 }
 
-// 📝 Add chat
+// 📝 Chat bubble output
 function updateChatLog(role, text) {
   const id = crypto.randomUUID();
   const html = marked.parse(text);
@@ -135,7 +129,7 @@ function updateChatLog(role, text) {
   }
 }
 
-// 💬 Speak response aloud
+// 🗣️ Speak response
 function speak(text) {
   const utter = new SpeechSynthesisUtterance(text);
   const selectedIndex = parseInt(voiceSelect.value);
@@ -145,9 +139,11 @@ function speak(text) {
   utter.rate = 1;
   utter.pitch = 1;
   utter.lang = "en-US";
+  utter.onend = () => {
+    if (voiceToggle.checked) recognizer?.start();
+  };
   speechSynthesis.speak(utter);
 }
-
 
 // 💾 Save memory
 async function saveToMemory(entry) {
@@ -159,7 +155,7 @@ async function saveToMemory(entry) {
   }
 }
 
-// 📖 Load saved memories
+// 📖 Load memories
 viewBtn.addEventListener("click", async () => {
   if (!memoryPanel.hidden) {
     memoryPanel.hidden = true;
@@ -181,7 +177,7 @@ viewBtn.addEventListener("click", async () => {
   }
 });
 
-// 🎤 Mic input → text
+// 🎤 Voice recognition
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognizer = SpeechRecognition ? new SpeechRecognition() : null;
 
@@ -196,15 +192,30 @@ if (recognizer) {
     chatForm.requestSubmit();
   };
 
-  recognizer.onerror = (e) => {
+  recognizer.onerror = () => {
     alert("Oops! I didn’t catch that. Try again?");
   };
 }
 
+// 🎤 Manual mic button
 micButton?.addEventListener("click", () => {
   if (!recognizer) {
     alert("Voice input not supported on this browser.");
     return;
   }
   recognizer.start();
+});
+
+// 🎛️ Auto start listening when Voice Mode is toggled on
+voiceToggle.addEventListener("change", () => {
+  if (voiceToggle.checked) {
+    if (!recognizer) {
+      alert("Voice input not supported on this browser.");
+      voiceToggle.checked = false;
+      return;
+    }
+    recognizer.start();
+  } else {
+    recognizer?.abort();
+  }
 });
