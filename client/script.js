@@ -1,20 +1,22 @@
-const promptEl    = document.getElementById("prompt");
-const textBtn     = document.getElementById("generateText");
-const imageBtn    = document.getElementById("generateImage");
-const chatLogEl   = document.getElementById("chatLog");
-const outputEl    = document.getElementById("output");
-const chatForm    = document.getElementById("chatForm");
-
-const temperatureSlider = document.getElementById("temperature");
-const tempValueDisplay = document.getElementById("tempValue");
+const promptEl     = document.getElementById("prompt");
+const textBtn      = document.getElementById("generateText");
+const imageBtn     = document.getElementById("generateImage");
+const chatLogEl    = document.getElementById("chatLog");
+const outputEl     = document.getElementById("output");
+const chatForm     = document.getElementById("chatForm");
+const tempSlider   = document.getElementById("temperature");
+const tempLabel    = document.getElementById("tempValue");
+const viewBtn      = document.getElementById("viewMemories");
+const memoryPanel  = document.getElementById("memoryPanel");
 
 let messages = [];
 
-// Live update slider label
-temperatureSlider.addEventListener("input", () => {
-  tempValueDisplay.textContent = temperatureSlider.value;
+// 🎚️ Update temp label in real time
+tempSlider?.addEventListener("input", () => {
+  tempLabel.textContent = tempSlider.value;
 });
 
+// ⏎ Submit with Enter (but Shift+Enter makes newline)
 promptEl.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
@@ -22,6 +24,7 @@ promptEl.addEventListener("keydown", (e) => {
   }
 });
 
+// 🌐 Utility for POST requests
 async function postJSON(url, data) {
   const res = await fetch(url, {
     method: "POST",
@@ -35,7 +38,7 @@ async function postJSON(url, data) {
   return text ? JSON.parse(text) : {};
 }
 
-// Handle sending text prompt
+// 🧠 Submit text prompt to assistant
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const userPrompt = promptEl.value.trim();
@@ -46,7 +49,7 @@ chatForm.addEventListener("submit", async (e) => {
   promptEl.value = "";
   outputEl.innerHTML = "";
 
-  const temperature = parseFloat(temperatureSlider.value);
+  const temperature = parseFloat(tempSlider?.value || "0.7");
 
   try {
     const { text } = await postJSON("/.netlify/functions/generate-text", {
@@ -60,8 +63,8 @@ chatForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Handle image generation
-imageBtn.addEventListener("click", async () => {
+// 🖼️ Generate image
+imageBtn?.addEventListener("click", async () => {
   const prompt = promptEl.value.trim();
   if (!prompt) return;
 
@@ -78,7 +81,7 @@ imageBtn.addEventListener("click", async () => {
   }
 });
 
-// Render chat message
+// 📝 Render chat
 function updateChatLog(role, text) {
   const id = crypto.randomUUID();
   const html = marked.parse(text);
@@ -92,6 +95,7 @@ function updateChatLog(role, text) {
         role === "assistant"
           ? `<div class="toolbar">
                <button class="copy-btn" title="Copy">📋</button>
+               <button class="save-btn" title="Save to Cora Memory">💾</button>
              </div>`
           : ""
       }
@@ -103,14 +107,19 @@ function updateChatLog(role, text) {
   if (role === "assistant") {
     const bubble = document.getElementById(id);
     const copyBtn = bubble.querySelector(".copy-btn");
+    const saveBtn = bubble.querySelector(".save-btn");
 
-    copyBtn.addEventListener("click", () =>
+    copyBtn?.addEventListener("click", () =>
       copyToClipboard(bubble.innerText.trim(), copyBtn)
+    );
+
+    saveBtn?.addEventListener("click", () =>
+      saveToMemory({ type: "text", content: text, date: new Date().toISOString() })
     );
   }
 }
 
-// Clipboard helper
+// 📋 Copy to clipboard
 function copyToClipboard(text, btn) {
   navigator.clipboard.writeText(text).then(() => {
     const old = btn.textContent;
@@ -118,3 +127,37 @@ function copyToClipboard(text, btn) {
     setTimeout(() => (btn.textContent = old), 1500);
   });
 }
+
+// 💾 Save to cloud memory
+async function saveToMemory(entry) {
+  try {
+    await postJSON("/.netlify/functions/save-memory", entry);
+    alert("Saved to Cora Memory!");
+  } catch (err) {
+    alert("Failed to save: " + err.message);
+  }
+}
+
+// 📖 Load memories
+viewBtn?.addEventListener("click", async () => {
+  if (!memoryPanel.hidden) {
+    memoryPanel.hidden = true;
+    return;
+  }
+
+  try {
+    const entries = await postJSON("/.netlify/functions/get-memories", {});
+    memoryPanel.innerHTML = entries.length
+      ? entries.map(item => `
+          <div class="memory-item">
+            <strong>${new Date(item.date).toLocaleString()}:</strong><br/>
+            ${item.content}
+          </div>`).join("")
+      : "<p>No memories yet!</p>";
+
+    memoryPanel.hidden = false;
+  } catch (err) {
+    memoryPanel.innerHTML = `<p class="error">${err.message}</p>`;
+    memoryPanel.hidden = false;
+  }
+});
